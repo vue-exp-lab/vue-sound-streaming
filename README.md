@@ -1,6 +1,9 @@
 # vue-ssr-starter-kit
 
-> A Vue.js project with vue 2.0, vue-router and vuex starter kit for server side rendering. 
+This is an implementation of sound streaming, with Vue.js SSr architect
+
+Base on the boilerplate :
+ - [https://github.com/wahengchang/vue-ssr-p5-kit](https://github.com/wahengchang/vue-ssr-p5-kit)
 
 ## Node Version Requirement
 
