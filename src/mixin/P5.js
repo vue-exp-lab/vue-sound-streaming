@@ -22,7 +22,8 @@ export default {
 
       sketch.draw = this.draw
     },
-    setup: function (canvasW = 200, canvasH = 200) {
+    setup: function () {
+      const {canvasW = 600, canvasH = 600} = this
       const domEle = this.sketch.createCanvas(canvasW, canvasH)
       domEle.parent('canvas-container')
     },
