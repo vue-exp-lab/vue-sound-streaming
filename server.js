@@ -71,7 +71,7 @@ app.get('*', (req, res) => {
     .pipe(res)
 })
 
-const port = process.env.PORT || 3000
+const port = parseInt(process.env.opePORT, 10) || 3000
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`)
 })
