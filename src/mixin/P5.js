@@ -23,9 +23,6 @@ export default {
       sketch.draw = this.draw
     },
     setup: function () {
-      const {canvasW = 600, canvasH = 600} = this
-      const domEle = this.sketch.createCanvas(canvasW, canvasH)
-      domEle.parent('canvas-container')
     },
     draw: function () {
       /* eslint-disable no-console */

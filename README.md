@@ -26,6 +26,11 @@ npm install
 npm run dev
 ```
 
+## Note
+
+ Noise : Perlin Noise 
+ noise.connect(): connect/disconnect noise from sound input
+
 ## Reference
 
  - [https://github.com/doabit/vue-ssr-starter-kit](https://github.com/doabit/vue-ssr-starter-kit)
