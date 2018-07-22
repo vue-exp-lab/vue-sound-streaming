@@ -45,6 +45,12 @@ app.use('/dist', serve('./dist', true))
 app.use(favicon(path.resolve(__dirname, 'src/assets/logo.png')))
 app.use('/service-worker.js', serve('./dist/service-worker.js'))
 
+app.get('/chunks/:id', (req, res)=>{
+  console.log('req.params.id: ', req.params.id)
+  res.sendFile(path.join(__dirname, './chunks', req.params.id));
+
+})
+
 app.get('*', (req, res) => {
   if (!renderer) {
     return res.end('waiting for compilation... refresh in a moment.')

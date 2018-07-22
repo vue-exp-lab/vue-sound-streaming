@@ -1,6 +1,6 @@
 import request from 'axios'
 
-request.defaults.baseURL = 'http://jsonplaceholder.typicode.com/'
+// request.defaults.baseURL = 'http://jsonplaceholder.typicode.com/'
 
 export const getTopics = ({ commit, state }) => {
   return request
