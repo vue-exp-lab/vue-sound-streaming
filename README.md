@@ -31,6 +31,17 @@ npm run dev
  Noise : Perlin Noise 
  noise.connect(): connect/disconnect noise from sound input
 
+
+
+#### createMediaElementSource()
+
+__*MediaElementAudioSourceNode *__
+
+It is an interface represents an audio source consisting of an HTML5 <audio> or <video> element. It is an AudioNode that acts as an audio source.
+
+#### createBufferSource()
+is used to create a new AudioBufferSourceNode
+
 ## Reference
 
  - [https://github.com/doabit/vue-ssr-starter-kit](https://github.com/doabit/vue-ssr-starter-kit)
