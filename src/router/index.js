@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Home from '../pages/Home.vue'
 import Sound from '../pages/Sound.vue'
-import Mic from '../pages/Mic.vue'
+import MicP5 from '../pages/MicP5.vue'
+import MicAudioContext from '../pages/MicAudioContext.vue'
 import AudioSys from '../pages/AudioSys.vue'
+import Oscillator from '../pages/Oscillator.vue'
+import RecordOscillator from '../pages/RecordOscillator.vue'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
@@ -15,7 +18,10 @@ export default function () {
       { path: '/', component: Home },
       { path: '/Sound', component: Sound },
       { path: '/AudioSys', component: AudioSys },
-      { path: '/Mic', component: Mic }
+      { path: '/Oscillator', component: Oscillator },
+      { path: '/RecordOscillator', component: RecordOscillator },
+      { path: '/MicAudioContext', component: MicAudioContext },
+      { path: '/MicP5', component: MicP5 }
     ]
   })
 }

@@ -42,6 +42,30 @@ It is an interface represents an audio source consisting of an HTML5 <audio> or 
 #### createBufferSource()
 is used to create a new AudioBufferSourceNode
 
+#### GainNode
+
+It is an audio-processing module that causes a given gain to be applied to the input data before its propagation to the output. 
+
+A GainNode always has exactly one input and one output, both with the same number of channels.
+
+![alt text](https://mdn.mozillademos.org/files/5085/WebAudioGainNode.png)
+
+
+#### OscillatorNode
+
+It represents a periodic waveform, such as a sine wave.
+
+![oscillator](https://media.springernature.com/original/springer-static/image/chp%3A10.1007%2F978-1-4842-0460-3_6/MediaObjects/978-1-4842-0460-3_6_Fig7_HTML.gif)
+
+#### URL.createObjectURL()
+
+It creates a `DOMString` containing a `URL representing the object` given in the parameter. 
+
+The new object URL represents the specified File object or Blob object.
+
+
+
+
 ## Reference
 
  - [https://github.com/doabit/vue-ssr-starter-kit](https://github.com/doabit/vue-ssr-starter-kit)
