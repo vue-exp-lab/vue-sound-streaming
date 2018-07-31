@@ -1,5 +1,13 @@
 import InlineWorker from 'inline-worker';
 
+/**
+ * @constructor new Recorder(source)
+ * 
+ * @method {record} record.record()
+ * @method {exportWAV} record.exportWAV()
+ * @method {start} record.start()
+ * @method {stop} record.stop()
+*/
 export class Recorder {
     config = {
         bufferLen: 4096,
@@ -9,11 +17,14 @@ export class Recorder {
 
     recording = false;
 
-    callbacks = {
+    callbackChuck = {
         getBuffer: [],
         exportWAV: []
     };
 
+/**
+ * @param {MediaStreamSource} audio_context.createMediaStreamSource(stream)
+*/
     constructor(source, cfg) {
         Object.assign(this.config, cfg);
         this.context = source.context;
@@ -24,8 +35,8 @@ export class Recorder {
         this.node.onaudioprocess = (e) => {
             if (!this.recording) return;
 
-            var buffer = [];
-            for (var channel = 0; channel < this.config.numChannels; channel++) {
+            const buffer = [];
+            for (let channel = 0; channel < this.config.numChannels; channel++) {
                 buffer.push(e.inputBuffer.getChannelData(channel));
             }
             this.worker.postMessage({
@@ -37,7 +48,6 @@ export class Recorder {
         source.connect(this.node);
         this.node.connect(this.context.destination);    //this should not be necessary
 
-        let self = {};
         this.worker = new InlineWorker(function () {
             let recLength = 0,
                 recBuffers = [],
@@ -45,7 +55,6 @@ export class Recorder {
                 numChannels;
 
             this.onmessage = function (e) {
-                console.log(' -=-=-=-= onmessage -=-=-=-=')
                 switch (e.data.command) {
                     case 'init':
                         init(e.data.config);
@@ -72,16 +81,14 @@ export class Recorder {
             }
 
             function record(inputBuffer) {
-                for (var channel = 0; channel < numChannels; channel++) {
+                for (let channel = 0; channel < numChannels; channel++) {
                     recBuffers[channel].push(inputBuffer[channel]);
                 }
                 recLength += inputBuffer[0].length;
             }
 
             function exportWAV(type) {
-                console.log('1 -=-=-=-= worker exportWAV ')
-                console.log('type: ', type)
-                let buffers = [];
+                const buffers = [];
                 for (let channel = 0; channel < numChannels; channel++) {
                     buffers.push(mergeBuffers(recBuffers[channel], recLength));
                 }
@@ -190,7 +197,7 @@ export class Recorder {
 
                 return view;
             }
-        }, self);
+        });
 
         this.worker.postMessage({
             command: 'init',
@@ -201,7 +208,7 @@ export class Recorder {
         });
 
         this.worker.onmessage = (e) => {
-            let cb = this.callbacks[e.data.command].pop();
+            const cb = this.callbackChuck[e.data.command].pop();
             if (typeof cb == 'function') {
                 cb(e.data.data);
             }
@@ -225,22 +232,17 @@ export class Recorder {
         cb = cb || this.config.callback;
         if (!cb) throw new Error('Callback not set');
 
-        this.callbacks.getBuffer.push(cb);
+        this.callbackChuck.getBuffer.push(cb);
 
         this.worker.postMessage({command: 'getBuffer'});
     }
 
-    exportWAV(cb, mimeType) {
-        console.log('1 -=-=-=-= exportWAV ')
-
+    exportWAV(mimeType = "audio/wav", cb) {
         mimeType = mimeType || this.config.mimeType;
         cb = cb || this.config.callback;
         if (!cb) throw new Error('Callback not set');
 
-        this.callbacks.exportWAV.push(cb);
-
-        console.log('2 -=-=-=-= exportWAV ')
-
+        this.callbackChuck.exportWAV.push(cb);
 
         this.worker.postMessage({
             command: 'exportWAV',
@@ -250,11 +252,11 @@ export class Recorder {
 
     static
     forceDownload(blob, filename) {
-        let url = (window.URL || window.webkitURL).createObjectURL(blob);
-        let link = window.document.createElement('a');
+        const url = (window.URL || window.webkitURL).createObjectURL(blob);
+        const link = window.document.createElement('a');
         link.href = url;
         link.download = filename || 'output.wav';
-        let click = document.createEvent("Event");
+        const click = document.createEvent("Event");
         click.initEvent("click", true, true);
         link.dispatchEvent(click);
     }

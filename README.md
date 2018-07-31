@@ -64,11 +64,52 @@ It creates a `DOMString` containing a `URL representing the object` given in the
 The new object URL represents the specified File object or Blob object.
 
 
+#### Media Recorder
+
+It creates a `DOMString` containing a `URL representing the object` given in the parameter. 
+
+The new object URL represents the specified File object or Blob object.
+
+#### MediaRecorder.requestData()
+is used to raise a dataavailable event containing a Blob object of the captured media as it was when the method was called. 
+```
+captureMedia.onclick = function() {
+    mediaRecorder.requestData();
+    // makes snapshot available of data so far
+    // ondataavailable fires, then capturing continues
+    // in new Blob
+  }
+```
+
+
+#### MediaRecorder.ondataavailable()
+handles the dataavailable event, letting you run code in response to Blob data being made available for use.
+
+#### BaseAudioContext.createScriptProcessor()
+
+It creates a ScriptProcessorNode used for direct audio processing.
+
+`var scriptProcessor = audioCtx.createScriptProcessor(bufferSize, numberOfInputChannels, numberOfOutputChannels);`
+
+
+
+#### mediaStreamObject
+The MediaStream API was designed to easy access the media streams from local `cameras` and `microphones`. The `getUserMedia()` method is the primary way to access local input devices.
+Three key points : 
+ - A real-time media stream is represented by a stream object in the form of video or audio
+ - It provides a security level through user permissions asking the user before a web application can start fetching a stream
+ - The selection of input devices is handled by the MediaStream API (for example, when there are two cameras or microphones connected to the device)
+
+Each `MediaStream` object includes several `MediaStreamTrack` objects. They represent video and audio from different input devices.
+
+Each `MediaStreamTrack` object may include several `channels` (right and left audio channels). These are the smallest parts defined by the MediaStream API.
+
 
 
 ## Reference
 
- - [https://github.com/doabit/vue-ssr-starter-kit](https://github.com/doabit/vue-ssr-starter-kit)
+ - [https://stackoverflow.com/questions/16413063/html5-record-audio-to-file/16498273](https://stackoverflow.com/questions/16413063/html5-record-audio-to-file/16498273)
+ - [MediaStream](https://www.tutorialspoint.com/webrtc/webrtc_media_stream_apis.htm)
 
 ## License
 
