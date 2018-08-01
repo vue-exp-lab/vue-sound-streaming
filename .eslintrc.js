@@ -25,5 +25,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     "no-new": "off",
     "new-cap": "off",
+  },
+  "env": {
+      "browser": true,
+      "node": true
   }
 }

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Recorder from "../lib/Recorder";
+import Recorder from "@bigear/microphone-recorder";
 const DEFAULT_AUDIO_FORMAT = "audio/wav";
 
 export default {
@@ -52,7 +52,6 @@ export default {
       document.getElementById("stop-btn").disabled = true;
 
       if (typeof callback == "function") {
-        recorder &&
           recorder.exportWAV(DEFAULT_AUDIO_FORMAT, function(blob) {
             callback(blob);
             recorder.clear();
