@@ -30,6 +30,7 @@
     "build": "rimraf dist && npm run build:client && npm run build:server",
     "unit": "karma start ./test/unit/karma.conf.js --single-run",
     "lint-fix": "npx eslint --fix",
+    "kill:3000": "pkill -15 -f -o bin/nodemon;kill $(lsof -i:3000 -sTCP:LISTEN -t);echo All mockServer should be killed",
     "heroku-postbuild": "npm run build"
   },
   "lint-staged": {
@@ -64,12 +65,14 @@
     "eslint": "^3.19.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^6.0.0-beta.2",
+    "eslint-config-vue": "^2.0.2",
     "eslint-friendly-formatter": "^2.0.6",
     "eslint-loader": "^1.5.0",
     "eslint-plugin-html": "^1.7.0",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-promise": "^3.3.0",
     "eslint-plugin-standard": "^2.0.0",
+    "eslint-plugin-vue": "^4.7.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "file-loader": "^0.8.4",
     "html-webpack-plugin": "^2.28.0",
