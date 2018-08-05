@@ -1,0 +1,163 @@
+ <template>
+    <div>
+        <div class="audioList">
+            <ul id='recordingslist' v-for="audioItem in audioList">
+                <li>
+                    <audio
+                        controls
+                        controlsList="play timeline nodownload novolume"
+                        v-bind:src="audioItem.url"/> 
+                    <a
+                        v-bind:href="audioItem.url"
+                        v-bind:download="new Date().toISOString() + '.wav'"
+                    >
+                        <span class="glyphicon glyphicon-download" />
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id="canvas-container" />
+        <div class="buttonDiv">
+            <button v-on:click="handleClickStart" :disabled="status == 'recording'"> Start </button>
+            <button v-on:click="handleClickStop" :disabled="status == 'stop'"> Stop </button>
+        </div>
+    </div>
+</template>
+
+<script>
+ /* eslint-disable */
+
+import P5Base from '../mixin/P5';
+import convertBufferToWav from '@bigear/convertbuffertowav';
+const DEFAULT_HEIGHT = 150
+export default {
+  extends: {mixins: [P5Base]},
+  data: function(){
+    return {
+        status: null,
+        mic : null,
+        recorder : null,
+        soundFile : null,
+        fft: null,
+        audioList: []
+    }
+  },
+  mounted() {
+    if (process.browser) {
+        Object.assign(window, this.sketch)
+        this.canvasW = window.innerWidth || 200
+        this.canvasH = DEFAULT_HEIGHT
+    }
+  },
+  methods: {
+    setup: function(){
+        this.canvasEle = createCanvas(this.canvasW, this.canvasH);
+        this.canvasEle.parent('canvas-container');
+    },
+    handleClickStart: function(){
+        this.status = 'recording'
+
+        this.mic = new p5.AudioIn();
+        this.mic.start();
+        
+        this.recorder = new p5.SoundRecorder();
+        this.recorder.setInput(this.mic);
+        this.soundFile = new p5.SoundFile();
+
+        this.fft = new p5.FFT();
+        this.fft.setInput(this.mic);
+
+        this.recorder.record(this.soundFile);
+        // background(255,0,0);
+        text('Recording now! Click to stop.', 20, 20);
+    },
+    handleClickStop: function(){
+        this.status = 'stop'
+        this.recorder.stop(); // stop recorder, and send the result to soundFile
+        this.appendAudioToList()
+    },
+    appendAudioToList: function(){
+        this.soundFile.play(); // play the result!
+
+        const {buffer} = this.soundFile.bufferSourceNode
+        // console.log(buffer.getChannelData(1))
+
+        const dataview = convertBufferToWav(buffer.getChannelData(0))
+        const audioBlob = new Blob([dataview], {type: 'audio/wav'})
+
+        const url = URL.createObjectURL(audioBlob)
+        this.audioList.push({
+            url,
+            blob: audioBlob
+        })
+
+        // const li = document.createElement('li')
+        // const au = document.createElement('audio')
+        // const hf = document.createElement('a')
+
+        // au.controls = true
+        // au.src = url
+        // hf.href = url
+        // hf.download = new Date().toISOString() + '.wav'
+        // hf.innerHTML = hf.download
+        // li.appendChild(au)
+        // li.appendChild(hf)
+        // document.getElementById('recordingslist').appendChild(li)
+        // saveSound(this.soundFile, 'mySound.wav'); // save file
+    },
+    draw: function(){
+        background(200);
+   noFill();
+        
+        if(this.status === 'recording') {
+            const spectrum = this.fft.analyze();
+            const interval = Math.floor(spectrum.length/this.canvasW)
+
+            beginShape();
+            for (let i = 0; i<spectrum.length; i+=interval) {
+                vertex(i, map(spectrum[i], 0, 255, DEFAULT_HEIGHT, 0) );
+            }
+            endShape();
+        }
+    },
+  }
+
+}
+</script>
+<style>
+body {
+    margin: 0;
+}
+.buttonDiv {
+    bottom: 0;
+    position: fixed;
+    display: flex;
+    width: 100%;
+}
+.buttonDiv button{
+    height: 80px;
+    flex-grow: 1;
+    font-size: 50px;
+}
+
+#canvas-container {
+    position: fixed;
+    bottom: 80px;
+    margin: 0;
+    padding: 0;
+}
+
+.audioList ul{
+    background:#f1f3f4;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.audioList ul li{
+    display: flex;
+}
+.audioList ul li audio{
+}
+
+
+</style>

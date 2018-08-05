@@ -6,6 +6,7 @@ import MicAudioContext from '../pages/MicAudioContext.vue'
 import AudioSys from '../pages/AudioSys.vue'
 import Oscillator from '../pages/Oscillator.vue'
 import RecordOscillator from '../pages/RecordOscillator.vue'
+import MicP5MicDownload from '../pages/MicP5MicDownload.vue'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
@@ -20,6 +21,7 @@ export default function () {
       { path: '/AudioSys', component: AudioSys },
       { path: '/Oscillator', component: Oscillator },
       { path: '/RecordOscillator', component: RecordOscillator },
+      { path: '/MicP5MicDownload', component: MicP5MicDownload },
       { path: '/MicAudioContext', component: MicAudioContext },
       { path: '/MicP5', component: MicP5 }
     ]

@@ -1,5 +1,5 @@
 export default {
-  created: function () {
+  mounted: function () {
     if (process.browser) {
       this.initP5()
     }
