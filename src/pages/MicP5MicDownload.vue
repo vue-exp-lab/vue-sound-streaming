@@ -10,9 +10,7 @@
                     <a
                         v-bind:href="audioItem.url"
                         v-bind:download="new Date().toISOString() + '.wav'"
-                    >
-                        <span class="glyphicon glyphicon-download" />
-                    </a>
+                    > download </a>
                 </li>
             </ul>
         </div>
