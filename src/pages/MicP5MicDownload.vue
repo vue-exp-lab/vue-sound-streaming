@@ -1,8 +1,9 @@
  <template>
     <div>
-        <div class="audioList">
-            <ul id='recordingslist' v-for="audioItem in audioList">
-                <li>
+        <div class="audioList" :style="audioListHeightStyle">
+            <ul id='recordingslist'>
+                <li v-for="(audioItem, index) in audioList">
+                    <span> {{ index + 1 }}.</span>
                     <audio
                         controls
                         controlsList="play timeline nodownload novolume"
@@ -10,14 +11,15 @@
                     <a
                         v-bind:href="audioItem.url"
                         v-bind:download="new Date().toISOString() + '.wav'"
-                    > download </a>
+                    > Download </a>
                 </li>
             </ul>
         </div>
         <div id="canvas-container" />
-        <div class="buttonDiv">
-            <button v-on:click="handleClickStart" :disabled="status == 'recording'"> Start </button>
-            <button v-on:click="handleClickStop" :disabled="status == 'stop'"> Stop </button>
+        <div class="buttonDiv" :style="buttonDivHeightStyle">
+            <button v-on:click="handleClick">
+                {{ (status==='recording')? 'Stop' : 'Start'}}
+            </button>
         </div>
     </div>
 </template>
@@ -27,9 +29,24 @@
 
 import P5Base from '../mixin/P5';
 import convertBufferToWav from '@bigear/convertbuffertowav';
-const DEFAULT_HEIGHT = 150
+const DEFAULT_CANVAS_HEIGHT = 150
+const DEFAULT_BUTTON_HEIGHT = 80
 export default {
   extends: {mixins: [P5Base]},
+  computed: {
+    audioListHeightStyle: function () {
+      const winHeight = (process.browser && window.innerHeight) || 500
+      const divHeight = winHeight - DEFAULT_CANVAS_HEIGHT - DEFAULT_BUTTON_HEIGHT
+      return {
+        height: `${divHeight}px`
+      }
+    },
+    buttonDivHeightStyle: function(){
+      return {
+        height: `${DEFAULT_BUTTON_HEIGHT}px`
+      }
+    }
+  },
   data: function(){
     return {
         status: null,
@@ -44,7 +61,8 @@ export default {
     if (process.browser) {
         Object.assign(window, this.sketch)
         this.canvasW = window.innerWidth || 200
-        this.canvasH = DEFAULT_HEIGHT
+        this.canvasH = DEFAULT_CANVAS_HEIGHT
+        this.status = 'stop'
     }
   },
   methods: {
@@ -52,7 +70,20 @@ export default {
         this.canvasEle = createCanvas(this.canvasW, this.canvasH);
         this.canvasEle.parent('canvas-container');
     },
-    handleClickStart: function(){
+    handleClick: function(){
+        const {status} = this
+        this.status = 'recording'
+        
+        if(status === 'stop')
+            return this.handleStart()
+        
+        if(status === 'recording')
+            return this.handleStop()
+
+        console.error('unknown status')
+    },
+
+    handleStart: function(){
         this.status = 'recording'
 
         this.mic = new p5.AudioIn();
@@ -69,7 +100,7 @@ export default {
         // background(255,0,0);
         text('Recording now! Click to stop.', 20, 20);
     },
-    handleClickStop: function(){
+    handleStop: function(){
         this.status = 'stop'
         this.recorder.stop(); // stop recorder, and send the result to soundFile
         this.appendAudioToList()
@@ -105,15 +136,20 @@ export default {
     },
     draw: function(){
         background(200);
-   noFill();
+        noFill();
         
         if(this.status === 'recording') {
-            const spectrum = this.fft.analyze();
-            const interval = Math.floor(spectrum.length/this.canvasW)
+            const {canvasW, fft} = this
+            const spectrum = fft.analyze();
+            const SPECTRUM_LENGTH = spectrum.length
+            const MAX = 15
 
             beginShape();
-            for (let i = 0; i<spectrum.length; i+=interval) {
-                vertex(i, map(spectrum[i], 0, 255, DEFAULT_HEIGHT, 0) );
+            for (let i = 0; i<MAX; i++) {
+                const index = Math.floor(map(i, 0, MAX, 0, SPECTRUM_LENGTH))
+                const x = Math.floor(map(i, 0, MAX, 0, canvasW))
+                const _h = map(spectrum[index], 0, 255, DEFAULT_CANVAS_HEIGHT, 0)
+                vertex(x, _h );
             }
             endShape();
         }
@@ -133,7 +169,6 @@ body {
     width: 100%;
 }
 .buttonDiv button{
-    height: 80px;
     flex-grow: 1;
     font-size: 50px;
 }
@@ -145,6 +180,10 @@ body {
     padding: 0;
 }
 
+.audioList{
+    overflow: scroll;
+}
+
 .audioList ul{
     background:#f1f3f4;
     width: 100%;
@@ -153,7 +192,18 @@ body {
 }
 .audioList ul li{
     display: flex;
+    line-height: 50px;
+    border-bottom: solid 1px lightgray;
 }
+.audioList ul li span{
+    margin-left: 10px;
+    color: gray;
+}
+.audioList ul li a{
+    text-decoration: none;
+    color: darkslategrey;
+}
+
 .audioList ul li audio{
 }
 
