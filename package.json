@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/vue-exp-lab/vue-sound-streaming.git"
   },
+  "engines" : {
+    "node" : "8.10.1"
+  },
   "keywords": [
     "vue",
     "vuex",
